@@ -31,15 +31,26 @@ class GenerateConvIm2col(OptimizerPass):
         node.set_attr('line_buffer_codegen', Source(code_str))
 
     def _generate_im2col_2d(self, node):
-        code_str = node.model.config.backend.generate_conv2d_line_buffer_fn(
-            node.get_attr('index'),
-            node.get_attr('n_partitions'),
-            node.get_input_variable().shape[0],
-            node.get_input_variable().shape[1],
-            node.get_input_variable().shape[2],
-            kernel=(node.get_attr('filt_height'), node.get_attr('filt_width')),
-            stride=(node.get_attr('stride_height'), node.get_attr('stride_width')),
-            pad=(node.get_attr('pad_top'), node.get_attr('pad_bottom'), node.get_attr('pad_left'), node.get_attr('pad_right'))
-        )
-        
+        if node.get_attr('data_format') == 'channels_last':
+            code_str = node.model.config.backend.generate_conv2d_line_buffer_fn(
+                node.get_attr('index'),
+                node.get_attr('n_partitions'),
+                node.get_input_variable().shape[0],
+                node.get_input_variable().shape[1],
+                node.get_input_variable().shape[2],
+                kernel=(node.get_attr('filt_height'), node.get_attr('filt_width')),
+                stride=(node.get_attr('stride_height'), node.get_attr('stride_width')),
+                pad=(node.get_attr('pad_top'), node.get_attr('pad_bottom'), node.get_attr('pad_left'), node.get_attr('pad_right'))
+            )
+        else:
+            code_str = node.model.config.backend.generate_conv2d_line_buffer_fn(
+                node.get_attr('index'),
+                node.get_attr('n_partitions'),
+                node.get_input_variable().shape[1],
+                node.get_input_variable().shape[2],
+                node.get_input_variable().shape[0],
+                kernel=(node.get_attr('filt_height'), node.get_attr('filt_width')),
+                stride=(node.get_attr('stride_height'), node.get_attr('stride_width')),
+                pad=(node.get_attr('pad_top'), node.get_attr('pad_bottom'), node.get_attr('pad_left'), node.get_attr('pad_right'))
+            )
         node.set_attr('line_buffer_codegen', Source(code_str))

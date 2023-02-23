@@ -292,8 +292,12 @@ class VivadoBackend(FPGABackend):
         else:
             layer.set_attr('strategy', 'latency')
 
-        out_height = layer.get_output_variable().shape[0]
-        out_width = layer.get_output_variable().shape[1]
+        if layer.get_attr('data_format') == 'channels_last':
+            out_height = layer.get_output_variable().shape[0]
+            out_width = layer.get_output_variable().shape[1]
+        else:
+            out_height = layer.get_output_variable().shape[1]
+            out_width = layer.get_output_variable().shape[2]
         chosen_pf = layer.model.config.get_layer_config_value(layer, 'ParallelizationFactor', 1)
         valid_pf = self.get_valid_conv_partition_splits(out_height, out_width)
         if chosen_pf not in valid_pf:

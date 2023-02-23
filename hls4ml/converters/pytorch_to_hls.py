@@ -131,7 +131,8 @@ def pytorch_to_hls(config):
     model = reader.torch_model
 
     #Define layers to skip for conversion to HLS
-    skip_layers = ['Dropout', 'Flatten', 'Sequential']
+    skip_layers = ['Dropout', 'Sequential']
+    # skip_layers = ['Dropout', 'Flatten', 'Sequential']
     
     #All supported layers
     supported_layers = get_supported_pytorch_layers() + skip_layers
@@ -156,7 +157,7 @@ def pytorch_to_hls(config):
     input_layer = {}
     input_layer['name'] = 'input1'
     input_layer['class_name'] = 'InputLayer'
-    input_layer['input_shape'] = input_shapes[0][1:]
+    input_layer['input_shape'] = input_shapes[0]
     layer_list.insert(0, input_layer)
     print("Input Shape: ", input_shapes)
     
@@ -181,7 +182,8 @@ def pytorch_to_hls(config):
                 continue
 
             if pytorch_class == 'Flatten':
-                output_shapes[layer_name] = [input_shapes[0][0], np.prod(input_shapes[0][1:])]
+                output_shape = [1, np.prod(input_shapes[0][0:])]
+                output_shapes[layer_name] = output_shape
             else:
                 output_shapes[layer_name] = input_shapes[0]
             continue #!!

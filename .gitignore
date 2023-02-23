@@ -12,4 +12,9 @@ my-hls-test
 docs/_build
 docs/autodoc/*
 hls4mlprj_*
+hls4ml_prj_*
+*core.py
+*example.py
+keras_cnn.py
+dataloader.py
 *~
