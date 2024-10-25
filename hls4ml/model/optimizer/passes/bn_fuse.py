@@ -25,6 +25,7 @@ class FuseBatchNormalization(OptimizerPass):
             and isinstance(prev_node.get_output_variable().type.precision, UnspecifiedPrecisionType)
         )
         if basic_match:
+            if hasattr(prev_node.weights['weight'], 'data_unquantized') == False: return 
             s0 = prev_node.weights['weight'].data_unquantized
             b0 = prev_node.weights['bias'].data_unquantized
             s1 = node.weights['scale'].data_unquantized
@@ -92,3 +93,4 @@ class FuseBatchNormalization(OptimizerPass):
         model.remove_node(node, rewire=True)
 
         return True
+
