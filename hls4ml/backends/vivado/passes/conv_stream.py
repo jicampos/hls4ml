@@ -25,7 +25,9 @@ class GenerateConvStreamingInstructions(OptimizerPass):
                 node.get_attr('filt_width'),
                 node.get_attr('stride_width'),
             )
+            if node.get_attr('conv_implementation') == 'LineBuffer': instructions = []
             instructions_str = ','.join(str(i) for i in instructions)
+            node.set_attr('min_width', min_w)
             node.set_attr('min_width', min_w)
             node.set_attr('instructions', instructions_str)
         else:
@@ -42,6 +44,7 @@ class GenerateConvStreamingInstructions(OptimizerPass):
                 node.get_attr('filt_height'),
                 node.get_attr('stride_height'),
             )
+            if node.get_attr('conv_implementation') == 'LineBuffer': instructions = []
             instructions_str = ','.join(str(i) for i in instructions)
             node.set_attr('min_height', min_h)
             node.set_attr('min_width', min_w)
