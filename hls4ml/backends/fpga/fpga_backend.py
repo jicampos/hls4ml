@@ -679,7 +679,6 @@ class FPGABackend(Backend):
                         windows_bin[index_data][i_fh * kernel_width + i_fw] = 1
 
         windows_int = []
-        return (min_H, min_W, windows_int)
 
         for i in range(min_H):
             for j in range(min_W):
